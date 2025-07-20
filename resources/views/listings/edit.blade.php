@@ -108,13 +108,15 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-floating">
-                                            <select class="form-control bg-transparent" name="hotel_category" id="hotel_category" required>
+                                           <select class="form-control bg-transparent" name="hotel_category" id="hotel_category" required>
                                                 <option value="">Select Category</option>
-                                                <option value="Luxury" {{ old('hotel_category', $listing->hotel_category) === 'Luxury' ? 'selected' : '' }}>Luxury</option>
-                                                <option value="Budget" {{ old('hotel_category', $listing->hotel_category) === 'Budget' ? 'selected' : '' }}>Budget</option>
-                                                <option value="Hostel" {{ old('hotel_category', $listing->hotel_category) === 'Hostel' ? 'selected' : '' }}>Hostel</option>
-                                                <option value="Resort" {{ old('hotel_category', $listing->hotel_category) === 'Resort' ? 'selected' : '' }}>Resort</option>
+                                                <option value="★☆☆☆☆" {{ old('hotel_category', $listing->hotel_category) === '★☆☆☆☆' ? 'selected' : '' }}>★☆☆☆☆ (1 Star)</option>
+                                                <option value="★★☆☆☆" {{ old('hotel_category', $listing->hotel_category) === '★★☆☆☆' ? 'selected' : '' }}>★★☆☆☆ (2 Stars)</option>
+                                                <option value="★★★☆☆" {{ old('hotel_category', $listing->hotel_category) === '★★★☆☆' ? 'selected' : '' }}>★★★☆☆ (3 Stars)</option>
+                                                <option value="★★★★☆" {{ old('hotel_category', $listing->hotel_category) === '★★★★☆' ? 'selected' : '' }}>★★★★☆ (4 Stars)</option>
+                                                <option value="★★★★★" {{ old('hotel_category', $listing->hotel_category) === '★★★★★' ? 'selected' : '' }}>★★★★★ (5 Stars)</option>
                                             </select>
+
                                             <label for="hotel_category">Hotel Category</label>
                                         </div>
                                     </div>

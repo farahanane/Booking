@@ -81,13 +81,7 @@
     </style>
 </head>
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
+    
 
     <!-- Navbar & Hero Start -->
     <div class="container-fluid position-relative p-0">
@@ -100,9 +94,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
-                    <a href="{{ route('listings.index') }}" class="nav-item nav-link">Home</a>
-                    <a href="about.html" class="nav-item nav-link">About</a>
-                    <a href="service.html" class="nav-item nav-link">Services</a>
                     <a href="{{ route('listings.index') }}" class="nav-item nav-link">Hotels</a>
                     @if (Auth::check())
                         <a href="{{ route('profile') }}" class="nav-item nav-link {{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
@@ -170,82 +161,106 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <h1 class="mb-4">{{ $listing->title }}</h1>
-                    <p><i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $listing->location_city }}, {{ $listing->location_country }}</p>
-                    <p><i class="fa fa-star text-primary me-2"></i>{{ $listing->hotel_category }}</p>
-                    <p><i class="fa fa-bed text-primary me-2"></i>{{ $listing->number_of_rooms }} Rooms</p>
-                    <p><i class="fa fa-dollar-sign text-primary me-2"></i>{{ number_format($listing->price_per_night, 2) }} DT per night</p>
-                    <p class="mb-4">{{ $listing->description }}</p>
-                    <p><i class="fa fa-envelope text-primary me-2"></i>{{ $listing->hotel_email }}</p>
-                    @if (Auth::check() && Auth::user()->email === 'admin@gmail.com')
-                        <div class="d-flex mb-2">
-                            <a href="{{ route('listings.edit', $listing->id) }}" class="btn btn-sm btn-warning px-3 border-end" style="border-radius: 30px 0 0 30px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zm14.24-12.24c.39-.39 1.02-.39 1.41 0l2.34 2.34c.39.39.39 1.02 0 1.41L17.83 11.1l-3.75-3.75 3.16-3.24z"/></svg>
-                                Edit
-                            </a>
-                            <form action="{{ route('listings.destroy', $listing->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this listing?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger px-3" style="border-radius: 0 30px 30px 0;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                    Delete
-                                </button>
-                            </form>
-                        </div>
-                    @endif
-                </div>
-                <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="booking-form mt-4">
-                        <h3 class="mb-4">Book This Hotel</h3>
-                        @if (Auth::check())
-                            <form action="{{ route('reservations.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="listing_id" value="{{ $listing->id }}">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label for="start_date" class="form-label">Check-in Date</label>
-                                        <input type="date" class="form-control datepicker" name="start_date" id="start_date" value="{{ $start_date ?? '' }}" required>
-                                        @if ($errors->has('start_date'))
-                                            <span class="text-danger">{{ $errors->first('start_date') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="end_date" class="form-label">Check-out Date</label>
-                                        <input type="date" class="form-control datepicker" name="end_date" id="end_date" value="{{ $end_date ?? '' }}" required>
-                                        @if ($errors->has('end_date'))
-                                            <span class="text-danger">{{ $errors->first('end_date') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="number_of_travelers" class="form-label">Travelers</label>
-                                        <select class="form-select" name="number_of_travelers" id="number_of_travelers" required>
-                                            <option value="" disabled {{ !$number_of_travelers ? 'selected' : '' }}>Select Travelers</option>
-                                            @for ($i = 1; $i <= 10; $i++)
-                                                <option value="{{ $i }}" {{ $number_of_travelers == $i ? 'selected' : '' }}>{{ $i }} Traveler{{ $i > 1 ? 's' : '' }}</option>
-                                            @endfor
-                                        </select>
-                                        @if ($errors->has('number_of_travelers'))
-                                            <span class="text-danger">{{ $errors->first('number_of_travelers') }}</span>
-                                        @endif
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="total-price" id="total-price" style="display: none;">
-                                            <span id="price-breakdown"></span> x <span id="nights"></span> nuits
-                                            <br>
-                                            Total <span id="total-amount"></span> DT
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary w-100">Book Now</button>
-                                    </div>
-                                </div>
-                            </form>
-                        @else
-                            <p class="text-center">Please <a href="{{ route('login') }}">log in</a> to book this hotel.</p>
+               <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+    <h1 class="mb-4">{{ $listing->title }}</h1>
+    <p><i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $listing->location_city }}, {{ $listing->location_country }}</p>
+    <p><i class="fa fa-star text-primary me-2"></i>{{ $listing->hotel_category }}</p>
+    <p><i class="fa fa-bed text-primary me-2"></i>{{ $listing->number_of_rooms }} Rooms</p>
+    <!-- Removed price_per_night -->
+    <p class="mb-4">{{ $listing->description }}</p>
+    <p><i class="fa fa-envelope text-primary me-2"></i>{{ $listing->hotel_email }}</p>
+    @if (Auth::check() && Auth::user()->email === 'admin@gmail.com')
+        <div class="d-flex mb-2">
+            <a href="{{ route('listings.edit', $listing->id) }}" class="btn btn-sm btn-warning px-3 border-end" style="border-radius: 30px 0 0 30px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zm14.24-12.24c.39-.39 1.02-.39 1.41 0l2.34 2.34c.39.39.39 1.02 0 1.41L17.83 11.1l-3.75-3.75 3.16-3.24z"/></svg>
+                Edit
+            </a>
+            <form action="{{ route('listings.destroy', $listing->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this listing?')">
+                @csrf
+                @method('DELETE')
+                <button class="btn btn-sm btn-danger px-3" style="border-radius: 0 30px 30px 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    Delete
+                </button>
+            </form>
+        </div>
+    @endif
+</div>
+              <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.5s">
+    <div class="booking-form mt-4">
+        <h3 class="mb-4">Book This Hotel</h3>
+        @if (Auth::check())
+            <form action="{{ route('reservations.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="listing_id" value="{{ $listing->id }}">
+                <input type="hidden" name="total_price" id="total_price" value="0">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="start_date" class="form-label">Check-in Date</label>
+                        <input type="date" class="form-control datepicker" name="start_date" id="start_date" value="{{ $start_date ?? '' }}" required>
+                        @if ($errors->has('start_date'))
+                            <span class="text-danger">{{ $errors->first('start_date') }}</span>
                         @endif
                     </div>
+                    <div class="col-md-4">
+                        <label for="end_date" class="form-label">Check-out Date</label>
+                        <input type="date" class="form-control datepicker" name="end_date" id="end_date" value="{{ $end_date ?? '' }}" required>
+                        @if ($errors->has('end_date'))
+                            <span class="text-danger">{{ $errors->first('end_date') }}</span>
+                        @endif
+                    </div>
+                    <div class="col-md-4">
+                        <label for="number_of_travelers" class="form-label">Travelers</label>
+                        <select class="form-select" name="number_of_travelers" id="number_of_travelers" required>
+                            <option value="" disabled {{ !$number_of_travelers ? 'selected' : '' }}>Select Travelers</option>
+                            @for ($i = 1; $i <= 10; $i++)
+                                <option value="{{ $i }}" {{ $number_of_travelers == $i ? 'selected' : '' }}>{{ $i }} Traveler{{ $i > 1 ? 's' : '' }}</option>
+                            @endfor
+                        </select>
+                        @if ($errors->has('number_of_travelers'))
+                            <span class="text-danger">{{ $errors->first('number_of_travelers') }}</span>
+                        @endif
+                    </div>
+                  <div class="col-md-4">
+                    <label for="room_type" class="form-label">Room Type</label>
+                    <select class="form-select" name="room_type" id="room_type" required>
+                        <option value="" disabled selected>Select Room Type</option>
+                        @foreach ($listing->plans as $plan)
+                            <option value="{{ $plan->id }}" data-base-price="{{ $plan->base_price }}">{{ $plan->room_type }} ({{ number_format($plan->base_price, 2) }} DT)</option>
+                        @endforeach
+                    </select>
                 </div>
+               <div class="col-md-4">
+                <label for="meal_plan" class="form-label">Meal Plan</label>
+                <select class="form-select" name="meal_plan" id="meal_plan">
+                    <option value="" data-surcharge="0" selected>No Meal Plan (+0 DT)</option>
+                    @foreach (json_decode($listing->meal_plans, true) ?? [] as $mealPlan)
+                        @php
+                            // Extract the numeric value from the meal plan string (e.g., "+40 TND" -> 40)
+                            preg_match('/\+(\d+\.?\d*)/', $mealPlan, $matches);
+                            $surcharge = !empty($matches[1]) ? floatval($matches[1]) : 0;
+                        @endphp
+                        <option value="{{ $mealPlan }}" data-surcharge="{{ $surcharge }}">{{ $mealPlan }}</option>
+                    @endforeach
+                </select>
+            </div>
+                    <div class="col-12">
+    <div class="total-price" id="total-price" style="display: none;">
+        Total: <span id="total-amount"></span> DT
+    </div>
+</div>
+        
+
+<div class="col-12">
+                        <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                    </div>
+                </div>
+            </form>
+        @else
+            <p class="text-center">Please <a href="{{ route('login') }}">log in</a> to book this hotel.</p>
+        @endif
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -321,56 +336,103 @@
     <script src="{{ asset('lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
     <!-- Template Javascript -->
-    <script src="{{ asset('js/main.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            $('.datepicker').datetimepicker({
-                format: 'YYYY-MM-DD',
-                minDate: moment(),
-                useCurrent: false
-            });
+ <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        $('.datepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            minDate: moment(),
+            useCurrent: false
+        });
 
-            $('#start_date').on('change.datetimepicker', function (e) {
-                $('#end_date').datetimepicker('minDate', e.date);
-                updateTotalPrice();
-            });
-            $('#end_date').on('change.datetimepicker', function (e) {
-                $('#start_date').datetimepicker('maxDate', e.date);
-                updateTotalPrice();
-            });
-
-            function updateTotalPrice() {
-                let startDate = $('#start_date').val();
-                let endDate = $('#end_date').val();
-                const pricePerNight = {{ $listing->price_per_night }};
-                const totalPriceElement = $('#total-price');
-                const priceBreakdownElement = $('#price-breakdown');
-                const nightsElement = $('#nights');
-                const totalAmountElement = $('#total-amount');
-
-                if (startDate && endDate) {
-                    const start = moment(startDate);
-                    const end = moment(endDate);
-                    const nights = end.diff(start, 'days');
-
-                    if (nights > 0) {
-                        const totalPrice = pricePerNight * nights;
-                        const formattedPricePerNight = pricePerNight.toFixed(2).replace('.', ',');
-                        priceBreakdownElement.text(formattedPricePerNight + ' DT');
-                        nightsElement.text(nights);
-                        totalAmountElement.text(totalPrice.toFixed(2).replace('.', ','));
-                        totalPriceElement.show();
-                    } else {
-                        totalPriceElement.hide();
-                    }
-                } else {
-                    totalPriceElement.hide();
-                }
-            }
-
-            // Initial call to display total price if query parameters are present
+        $('#start_date').on('change.datetimepicker', function (e) {
+            $('#end_date').datetimepicker('minDate', e.date);
             updateTotalPrice();
         });
-    </script>
+        $('#end_date').on('change.datetimepicker', function (e) {
+            $('#start_date').datetimepicker('maxDate', e.date);
+            updateTotalPrice();
+        });
+        $('#room_type, #meal_plan, #number_of_travelers').on('change', updateTotalPrice);
+
+        function updateTotalPrice() {
+            let startDate = $('#start_date').val();
+            let endDate = $('#end_date').val();
+            let roomType = $('#room_type').find(':selected');
+            let mealPlan = $('#meal_plan').find(':selected');
+            let numberOfTravelers = parseInt($('#number_of_travelers').val()) || 0;
+
+            const totalPriceElement = $('#total-price');
+            const roomCostElement = $('#room-cost');
+            const mealPlanCostElement = $('#meal-plan-cost');
+            const totalAmountElement = $('#total-amount');
+            const totalPriceInput = $('#total_price');
+
+            console.log('Inputs:', {
+                startDate,
+                endDate,
+                roomTypeVal: roomType.val(),
+                roomTypeText: roomType.text(),
+                mealPlanVal: mealPlan.val(),
+                mealPlanSurcharge: mealPlan.data('surcharge'),
+                numberOfTravelers
+            });
+
+            if (startDate && endDate && roomType.val() && numberOfTravelers) {
+                const start = moment(startDate);
+                const end = moment(endDate);
+                const nights = end.diff(start, 'days');
+                const basePrice = parseFloat(roomType.data('base-price')) || 0;
+                const surchargePerPerson = parseFloat(mealPlan.data('surcharge')) || 0;
+
+                console.log('Calculated Values:', {
+                    nights,
+                    basePrice,
+                    surchargePerPerson,
+                    isNaN_surcharge: isNaN(surchargePerPerson)
+                });
+
+                if (nights > 0) {
+                    const roomsNeeded = Math.ceil(numberOfTravelers / 2);
+                    const roomTotal = basePrice * roomsNeeded * nights;
+                    const mealPlanTotal = surchargePerPerson * numberOfTravelers * nights;
+                    const totalPrice = roomTotal + mealPlanTotal;
+
+                    console.log('Result:', {
+                        roomsNeeded,
+                        roomTotal,
+                        mealPlanTotal,
+                        totalPrice
+                    });
+
+                    roomCostElement.text(roomTotal.toFixed(2).replace('.', ','));
+                    mealPlanCostElement.text(mealPlanTotal.toFixed(2).replace('.', ','));
+                    totalAmountElement.text(totalPrice.toFixed(2).replace('.', ','));
+                    totalPriceInput.val(totalPrice.toFixed(2));
+                    totalPriceElement.show();
+                } else {
+                    totalPriceElement.hide();
+                    totalPriceInput.val(0);
+                    roomCostElement.text('0');
+                    mealPlanCostElement.text('0');
+                    totalAmountElement.text('0');
+                }
+            } else {
+                totalPriceElement.hide();
+                totalPriceInput.val(0);
+                roomCostElement.text('0');
+                mealPlanCostElement.text('0');
+                totalAmountElement.text('0');
+            }
+        }
+
+        // Check for success message on page load
+        @if (session('success'))
+            alert('{{ session('success') }}');
+        @endif
+
+        // Initial call to display total price if query parameters are present
+        updateTotalPrice();
+    });
+</script>
 </body>
 </html>

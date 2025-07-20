@@ -359,9 +359,9 @@
                                     @if (Auth::user()->email === 'admin@gmail.com')
                                         <td>{{ $reservation->user->name }} ({{ $reservation->user->email }})</td>
                                     @endif
-                                    <td>{{ $reservation->start_date->format('Y-m-d') }}</td>
-                                    <td>{{ $reservation->end_date->format('Y-m-d') }}</td>
-                                    <td>{{ $reservation->number_of_travelers }} Traveler{{ $reservation->number_of_travelers > 1 ? 's' : '' }}</td>
+                                    <td>{{ $reservation->start_date }}</td>
+                                     <td>{{ $reservation->end_date }}</td>
+                                      <td>{{ $reservation->number_of_travelers }} Traveler{{ $reservation->number_of_travelers > 1 ? 's' : '' }}</td>
                                     <td>{{ number_format($reservation->total_price, 2) }} DT</td>
                                     @if (Auth::user()->email === 'admin@gmail.com')
                                         <td>

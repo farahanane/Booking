@@ -215,9 +215,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{{ route('listings.index') }}" class="nav-item nav-link">Home</a>
-                <a href="about.html" class="nav-item nav-link">About</a>
-                <a href="service.html" class="nav-item nav-link">Services</a>
                 <a href="{{ route('listings.index') }}" class="nav-item nav-link">Hotels</a>
             </div>
             <div class="d-flex align-items-center ms-3">

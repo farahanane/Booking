@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Existing head content remains unchanged -->
     <meta charset="utf-8">
     <title>Tourist - Listings</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -30,8 +31,9 @@
     <!-- Template Stylesheet -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
-    <!-- Inline Styles for Sort Bar, Profile Dropdown, and Pagination -->
+    <!-- Inline Styles for Sort Bar, Profile Dropdown, Pagination, and Filter Dropdown -->
     <style>
+        /* Existing styles remain unchanged */
         .sort-bar {
             background: #fff;
             padding: 15px;
@@ -131,7 +133,6 @@
             background: #007bff;
             color: white;
         }
-        /* Custom Pagination Styling */
         .pagination {
             display: flex;
             justify-content: center;
@@ -139,11 +140,9 @@
             gap: 10px;
             align-items: center;
         }
-
         .pagination .page-item {
             display: inline-flex;
         }
-
         .pagination .page-link {
             display: flex;
             align-items: center;
@@ -151,55 +150,115 @@
             color: white;
             text-decoration: none;
             transition: background 0.3s ease, transform 0.2s ease;
-            padding: 0 10px; /* Adjusted padding for non-circular arrows */
+            padding: 0 10px;
         }
-
-        /* Style for page number links */
         .pagination .page-item:not(.prev-next) .page-link {
             width: 40px;
             height: 40px;
-            border-radius: 50%; /* Keep page numbers circular */
+            border-radius: 50%;
             background: #007bff;
             font-size: 16px;
         }
-
         .pagination .page-item:not(.prev-next) .page-link:hover,
         .pagination .page-item:not(.prev-next) .page-link:focus {
             background: #0056b3;
             transform: scale(1.1);
             outline: none;
         }
-
         .pagination .page-item.active:not(.prev-next) .page-link {
             background: #0056b3;
             font-weight: 600;
         }
-
-        /* Style for previous and next arrow links */
         .pagination .prev-next .page-link {
             background: #007bff;
             font-size: 16px;
         }
-
         .pagination .prev-next .page-link:hover,
         .pagination .prev-next .page-link:focus {
             background: #0056b3;
             outline: none;
         }
-
         .pagination .page-link:disabled {
             background: #6c757d;
             cursor: not-allowed;
             transform: none;
         }
-
         .pagination .page-link svg {
             width: 16px;
             height: 16px;
         }
+        /* New Filter Dropdown Styles */
+        .filter-btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            margin-left: 10px;
+        }
+        .filter-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 123, 255, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        .filter-btn .icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover .icon {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        .filter-dropdown {
+            display: none;
+            position: absolute;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            z-index: 1000;
+            min-width: 250px;
+            top: 100%;
+            right: 0;
+        }
+        .filter-dropdown.active {
+            display: block;
+        }
+        .filter-dropdown label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .filter-dropdown .form-select {
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .filter-dropdown .btn {
+            width: 100%;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
+    <!-- Existing content up to the Listings section remains unchanged -->
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -219,38 +278,35 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
-                    <a href="{{ route('listings.index') }}" class="nav-item nav-link">Home</a>
-                    <a href="about.html" class="nav-item nav-link">About</a>
-                    <a href="service.html" class="nav-item nav-link">Services</a>
                     <a href="{{ route('listings.index') }}" class="nav-item nav-link">Hotels</a>
                 </div>
                 <div class="d-flex align-items-center ms-3">
-                   @if (Auth::check())
+                    @if (Auth::check())
                     <div class="dropdown">
                         <a class="profile-dropdown dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                @if (Auth::user()->avatar_url)
-                                    <img src="{{ Auth::user()->avatar_url }}" alt="Avatar" class="profile-avatar">
-                                @else
-                                    <img src="{{ asset('img/avatar.png') }}" alt="Default Avatar" class="profile-avatar">
-                                @endif
-                                {{ Auth::user()->name }}
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
-                                <li><a class="dropdown-item" href="{{ route('my.reservations') }}">My Reservations</a></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
+                            @if (Auth::user()->avatar_url)
+                                <img src="{{ Auth::user()->avatar_url }}" alt="Avatar" class="profile-avatar">
+                            @else
+                                <img src="{{ asset('img/avatar.png') }}" alt="Default Avatar" class="profile-avatar">
+                            @endif
+                            {{ Auth::user()->name }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ route('my.reservations') }}">My Reservations</a></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                     @else
                         <a href="{{ route('login') }}" class="btn btn-primary rounded-pill py-2 px-4 me-2">Login</a>
                         <a href="{{ route('register') }}" class="btn btn-primary rounded-pill py-2 px-4">Register</a>
                     @endif
-                  </div>
+                </div>
             </div>
         </nav>
 
@@ -316,13 +372,43 @@
                 <h1 class="mb-5">Our Hotels</h1>
             </div>
 
-            @if (Auth::check() && Auth::user()->email === 'admin@gmail.com')
-                <div class="text-end mb-4">
-                    <a href="{{ route('listings.create') }}" class="add-listing-btn">
-                        <span class="icon"><i class="fas fa-plus"></i></span> Add new hotel
-                    </a>
-                </div>
-            @endif
+               <div class="text-end mb-4 position-relative">
+    <button type="button" class="filter-btn" id="filter-btn"> 
+        <span class="icon"><i class="fas fa-filter"></i></span> Filters 
+    </button>
+  <div class="filter-dropdown" id="filter-dropdown">
+    <form action="{{ route('listings.index') }}" method="GET" id="filter-form">
+        <input type="hidden" name="location_city" value="{{ request()->query('location_city') }}">
+        <input type="hidden" name="start_date" value="{{ request()->query('start_date') }}">
+        <input type="hidden" name="end_date" value="{{ request()->query('end_date') }}">
+        <input type="hidden" name="number_of_travelers" value="{{ request()->query('number_of_travelers') }}">
+        
+        <div class="mb-3">
+            <label for="hotel_category">Hotel Category</label>
+            <select class="form-select" name="hotel_category" id="hotel_category">
+                <option value="">All</option>
+                <option value="★★★☆☆" {{ request('hotel_category') == '★★★☆☆' ? 'selected' : '' }}>3 Stars</option>
+                <option value="★★★★☆" {{ request('hotel_category') == '★★★★☆' ? 'selected' : '' }}>4 Stars</option>
+                <option value="★★★★★" {{ request('hotel_category') == '★★★★★' ? 'selected' : '' }}>5 Stars</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="meal_plan">Meal Plan</label>
+            <select class="form-select" name="meal_plan" id="meal_plan">
+                <option value="">All</option>
+                <option value="Logement seul (+0 TND)" {{ request('meal_plan') == 'Logement seul (+0 TND)' ? 'selected' : '' }}>Logement seul</option>
+                <option value="Petit déjeuner (+10 TND)" {{ request('meal_plan') == 'Petit déjeuner (+10 TND)' ? 'selected' : '' }}>Petit déjeuner</option>
+                <option value="Demi pension (+30 TND)" {{ request('meal_plan') == 'Demi pension (+30 TND)' ? 'selected' : '' }}>Demi pension</option>
+                <option value="Demi pension Plus (+40 TND)" {{ request('meal_plan') == 'Demi pension Plus (+40 TND)' ? 'selected' : '' }}>Demi pension Plus</option>
+                <option value="Pension complète (+50 TND)" {{ request('meal_plan') == 'Pension complète (+50 TND)' ? 'selected' : '' }}>Pension complète</option>
+                <option value="All inclusive soft (+70 TND)" {{ request('meal_plan') == 'All inclusive soft (+70 TND)' ? 'selected' : '' }}>All inclusive soft</option>
+                <option value="All inclusive (+80 TND)" {{ request('meal_plan') == 'All inclusive (+80 TND)' ? 'selected' : '' }}>All inclusive</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+    </form>
+</div>
+</div>
 
             @if ($listings->count())
                 <div class="row g-4 justify-content-center">
@@ -347,7 +433,10 @@
                                     <div class="d-flex mb-3 justify-content-start">
                                         <h4 class="flex-fill py-2 fw-bold" style="color: #2C3E50;">{{ $listing->title }}</h4>
                                         <span class="mx-3" style="border-left: 2px solid #dee2e6; height: 2em; border-radius: 2px; transform: translateY(3px);"></span>
-                                        <h4 class="flex-fill py-2 fw-bold" style="color: #2C3E50;">{{ number_format($listing->price_per_night, 2) }}<small><sup>DT</sup></small></h4>
+                                        @php
+                                            $minPrice = $listing->plans->isNotEmpty() ? $listing->plans->first()->min_price : 0;
+                                        @endphp
+                                        <h4 class="flex-fill py-2 fw-bold" style="color: #2C3E50;">{{ number_format($minPrice, 2) }}<small><sup>DT</sup></small></h4>
                                     </div>
                                     <div class="mb-3">
                                         <small class="fa fa-star text-primary"></small>
@@ -371,7 +460,7 @@
                         </div>
                     @endforeach
                 </div>
-               <!-- Pagination -->
+                <!-- Pagination -->
                 <div class="pagination">
                     {{ $listings->links('pagination::bootstrap-4', ['prev' => '<span class="bi bi-chevron-left"></span>', 'next' => '<span class="bi bi-chevron-right"></span>']) }}
                 </div>
@@ -382,6 +471,7 @@
     </div>
     <!-- Listings End -->
 
+    <!-- Existing Footer, Back to Top, and JavaScript remain unchanged -->
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
         <div class="container py-5">
@@ -439,79 +529,97 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-   <!-- JavaScript Libraries -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('lib/wow/wow.min.js') }}"></script>
-<script src="{{ asset('lib/easing/easing.min.js') }}"></script>
-<script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
-<script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
-<!-- Moment.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="{{ asset('lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
-<script src="{{ asset('lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('lib/wow/wow.min.js') }}"></script>
+    <script src="{{ asset('lib/easing/easing.min.js') }}"></script>
+    <script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="{{ asset('lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+    <script src="{{ asset('lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
-<!-- Template Javascript -->
-<script src="{{ asset('js/main.js') }}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const packageItems = document.querySelectorAll('.package-item');
+    <!-- Template Javascript -->
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const packageItems = document.querySelectorAll('.package-item');
 
-        // Get search parameters from the form or URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const locationCity = urlParams.get('location_city') || '';
-        const startDate = urlParams.get('start_date') || '';
-        const endDate = urlParams.get('end_date') || '';
-        const numberOfTravelers = urlParams.get('number_of_travelers') || '';
+            // Get search parameters from the form or URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const locationCity = urlParams.get('location_city') || '';
+            const startDate = urlParams.get('start_date') || '';
+            const endDate = urlParams.get('end_date') || '';
+            const numberOfTravelers = urlParams.get('number_of_travelers') || '';
+            const hotelCategory = urlParams.get('hotel_category') || '';
+            const mealPlans = urlParams.get('meal_plans') || '';
 
-        packageItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('form')) {
-                    e.stopPropagation();
-                    return;
-                }
-                const listingId = item.getAttribute('data-listing-id');
-                if (listingId) {
-                    // Build the URL with search parameters
-                    const queryParams = new URLSearchParams({
-                        location_city: locationCity,
-                        start_date: startDate,
-                        end_date: endDate,
-                        number_of_travelers: numberOfTravelers
-                    }).toString();
-                    window.location.href = `/listings/${listingId}?${queryParams}`;
-                }
+            packageItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('form')) {
+                        e.stopPropagation();
+                        return;
+                    }
+                    const listingId = item.getAttribute('data-listing-id');
+                    if (listingId) {
+                        const queryParams = new URLSearchParams({
+                            location_city: locationCity,
+                            start_date: startDate,
+                            end_date: endDate,
+                            number_of_travelers: numberOfTravelers,
+                            hotel_category: hotelCategory,
+                            meal_plans: mealPlans
+                        }).toString();
+                        window.location.href = `/listings/${listingId}?${queryParams}`;
+                    }
+                });
             });
+
+            // Initialize datepickers only if Moment.js is loaded
+            if (typeof moment !== 'undefined') {
+                $('.datepicker').datetimepicker({
+                    format: 'YYYY-MM-DD',
+                    minDate: moment(),
+                    useCurrent: false
+                });
+
+                $('#start_date').on('change.datetimepicker', function (e) {
+                    $('#end_date').datetimepicker('minDate', e.date);
+                });
+                $('#end_date').on('change.datetimepicker', function (e) {
+                    $('#start_date').datetimepicker('maxDate', e.date);
+                });
+            } else {
+                console.error('Moment.js is not loaded. Please check the script inclusion.');
+            }
+
+            // Add prev-next class to pagination arrows
+            const pagination = document.querySelector('.pagination');
+            if (pagination) {
+                const prevItem = pagination.querySelector('.page-item:first-child');
+                const nextItem = pagination.querySelector('.page-item:last-child');
+                if (prevItem) prevItem.classList.add('prev-next');
+                if (nextItem) nextItem.classList.add('prev-next');
+            }
+
+            // Filter dropdown toggle
+            const filterBtn = document.getElementById('filter-btn');
+            const filterDropdown = document.getElementById('filter-dropdown');
+            if (filterBtn && filterDropdown) {
+                filterBtn.addEventListener('click', () => {
+                    filterDropdown.classList.toggle('active');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!filterBtn.contains(e.target) && !filterDropdown.contains(e.target)) {
+                        filterDropdown.classList.remove('active');
+                    }
+                });
+            }
         });
-
-        // Initialize datepickers only if Moment.js is loaded
-        if (typeof moment !== 'undefined') {
-            $('.datepicker').datetimepicker({
-                format: 'YYYY-MM-DD',
-                minDate: moment(),
-                useCurrent: false
-            });
-
-            // Ensure end_date is after start_date
-            $('#start_date').on('change.datetimepicker', function (e) {
-                $('#end_date').datetimepicker('minDate', e.date);
-            });
-            $('#end_date').on('change.datetimepicker', function (e) {
-                $('#start_date').datetimepicker('maxDate', e.date);
-            });
-        } else {
-            console.error('Moment.js is not loaded. Please check the script inclusion.');
-        }
-
-        // Add prev-next class to pagination arrows
-        const pagination = document.querySelector('.pagination');
-        if (pagination) {
-            const prevItem = pagination.querySelector('.page-item:first-child');
-            const nextItem = pagination.querySelector('.page-item:last-child');
-            if (prevItem) prevItem.classList.add('prev-next');
-            if (nextItem) nextItem.classList.add('prev-next');
-        }
-    });
-</script>
+    </script>
 </body>
 </html>

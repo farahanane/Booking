@@ -37,7 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
     Route::get('/listings', [ListingController::class, 'index'])->name('listings.index');
     Route::get('/listings/create', [ListingController::class, 'create'])->name('listings.create');
-    Route::post('/listings', [ListingController::class, 'store'])->name('listings.store');
+    Route::post('/listings/store-step1', [ListingController::class, 'storeStep1'])->name('listings.store-step1');
+    Route::get('/listings/create-step2/{id}', [ListingController::class, 'createStep2'])->name('listings.create-step2');
+    Route::post('/listings/store-step2/{id}', [ListingController::class, 'storeStep2'])->name('listings.store-step2');
     Route::get('/listings/{id}/edit', [ListingController::class, 'edit'])->name('listings.edit');
     Route::put('/listings/{id}', [ListingController::class, 'update'])->name('listings.update');
     Route::delete('/listings/{id}', [ListingController::class, 'destroy'])->name('listings.destroy');
