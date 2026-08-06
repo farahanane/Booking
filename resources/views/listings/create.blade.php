@@ -29,13 +29,6 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
 
     <!-- Navbar & Hero Start -->
     <div class="container-fluid position-relative p-0">
@@ -106,12 +99,11 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <select class="form-control bg-transparent" name="hotel_category" id="hotel_category" required>
+                                       <select class="form-control bg-transparent" name="hotel_category" id="hotel_category" required>
                                             <option value="">Select Category</option>
-                                            <option value="Luxury">Luxury</option>
-                                            <option value="Budget">Budget</option>
-                                            <option value="Hostel">Hostel</option>
-                                            <option value="Resort">Resort</option>
+                                            <option value="★★★☆☆">★★★☆☆ (3 Stars)</option>
+                                            <option value="★★★★☆">★★★★☆ (4 Stars)</option>
+                                            <option value="★★★★★">★★★★★ (5 Stars)</option>
                                         </select>
                                         <label for="hotel_category">Hotel Category</label>
                                     </div>

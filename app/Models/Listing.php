@@ -10,21 +10,24 @@ class Listing extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'title',
         'description',
         'hotel_category',
         'location_country',
         'location_city',
-        'price_per_night',
         'number_of_rooms',
-        'image_url',
         'hotel_email',
-        'user_id',
+        'image_url',
     ];
-    public function reservations()
+
+    public function rooms()
     {
-        return $this->hasMany(Reservation::class, 'listing_id');
+        return $this->hasMany(Room::class);
     }
 
-    
+    public function formulas()
+    {
+        return $this->hasMany(Formula::class);
+    }
 }

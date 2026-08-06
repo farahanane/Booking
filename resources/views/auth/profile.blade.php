@@ -200,13 +200,6 @@
     </style>
 </head>
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
 
         <!-- Navbar & Hero Start -->
 <div class="container-fluid position-relative p-0">
@@ -219,9 +212,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{{ route('listings.index') }}" class="nav-item nav-link">Home</a>
-                <a href="about.html" class="nav-item nav-link">About</a>
-                <a href="service.html" class="nav-item nav-link">Services</a>
                 <a href="{{ route('listings.index') }}" class="nav-item nav-link">Hotels</a>
             </div>
             <div class="d-flex align-items-center ms-3">

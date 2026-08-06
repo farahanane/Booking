@@ -29,15 +29,8 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
 
-   <!-- Navbar & Hero Start -->
+    <!-- Navbar & Hero Start -->
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="{{ route('listings.index') }}" class="navbar-brand p-0">
@@ -49,7 +42,6 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
                     <a href="#" class="nav-item nav-link"></a>
-                 
                 </div>
                 @if (Auth::check())
                     <form method="POST" action="{{ route('logout') }}">
@@ -66,17 +58,13 @@
         </div>
     </div>
     <!-- Navbar & Hero End -->
+
     <!-- Booking Start -->
     <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="booking p-5">
                 <div class="row g-5 align-items-center">
-                    <div class="col-md-6 text-white">
-                        <h6 class="text-white text-uppercase">Edit Hotel</h6>
-                        <h1 class="text-white mb-4">Update Hotel Details</h1>
-                        <p class="mb-4">Discover your perfect getaway with our curated selection of vacation rentals and accommodations. Whether you're seeking a cozy beachfront villa, a luxurious mountain retreat, or a charming city apartment, our hotels offer unparalleled comfort and style.</p>
-                    </div>
-                    <div class="col-md-6">
+                
                         <h1 class="text-white mb-4">Hotel Details</h1>
                         @if (isset($listing))
                             <form method="POST" action="{{ route('listings.update', $listing->id) }}" enctype="multipart/form-data">
@@ -93,6 +81,7 @@
                                     </div>
                                 @endif
 
+                                <!-- Hotel Basic Details -->
                                 <div class="row g-3">
                                     <div class="col-md-12">
                                         <div class="form-floating">
@@ -110,10 +99,11 @@
                                         <div class="form-floating">
                                             <select class="form-control bg-transparent" name="hotel_category" id="hotel_category" required>
                                                 <option value="">Select Category</option>
-                                                <option value="Luxury" {{ old('hotel_category', $listing->hotel_category) === 'Luxury' ? 'selected' : '' }}>Luxury</option>
-                                                <option value="Budget" {{ old('hotel_category', $listing->hotel_category) === 'Budget' ? 'selected' : '' }}>Budget</option>
-                                                <option value="Hostel" {{ old('hotel_category', $listing->hotel_category) === 'Hostel' ? 'selected' : '' }}>Hostel</option>
-                                                <option value="Resort" {{ old('hotel_category', $listing->hotel_category) === 'Resort' ? 'selected' : '' }}>Resort</option>
+                                                <option value="★☆☆☆☆" {{ old('hotel_category', $listing->hotel_category) === '★☆☆☆☆' ? 'selected' : '' }}>★☆☆☆☆ (1 Star)</option>
+                                                <option value="★★☆☆☆" {{ old('hotel_category', $listing->hotel_category) === '★★☆☆☆' ? 'selected' : '' }}>★★☆☆☆ (2 Stars)</option>
+                                                <option value="★★★☆☆" {{ old('hotel_category', $listing->hotel_category) === '★★★☆☆' ? 'selected' : '' }}>★★★☆☆ (3 Stars)</option>
+                                                <option value="★★★★☆" {{ old('hotel_category', $listing->hotel_category) === '★★★★☆' ? 'selected' : '' }}>★★★★☆ (4 Stars)</option>
+                                                <option value="★★★★★" {{ old('hotel_category', $listing->hotel_category) === '★★★★★' ? 'selected' : '' }}>★★★★★ (5 Stars)</option>
                                             </select>
                                             <label for="hotel_category">Hotel Category</label>
                                         </div>
@@ -169,6 +159,77 @@
                                             <label for="hotel_email">Hotel Email Address</label>
                                         </div>
                                     </div>
+
+                                    <!-- Rooms Section -->
+                                    <div class="col-md-12 mt-4">
+                        <h1 class="text-white mb-4">Rooms</h1>
+                                        <div id="roomsContainer">
+                                            @foreach ($listing->rooms as $index => $room)
+                                                <div class="row g-3 mb-3 border p-3 rounded">
+                                                    <input type="hidden" name="rooms[{{ $index }}][id]" value="{{ $room->id }}">
+                                                    <div class="col-md-4">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control bg-transparent" name="rooms[{{ $index }}][room_type]" value="{{ old("rooms.$index.room_type", $room->room_type) }}" required>
+                                                            <label>Room Type</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-floating">
+                                                            <input type="date" class="form-control bg-transparent" name="rooms[{{ $index }}][start_date]" value="{{ old("rooms.$index.start_date", $room->start_date) }}" required>
+                                                            <label>Start Date</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-floating">
+                                                            <input type="date" class="form-control bg-transparent" name="rooms[{{ $index }}][end_date]" value="{{ old("rooms.$index.end_date", $room->end_date) }}" required>
+                                                            <label>End Date</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-floating">
+                                                            <input type="number" step="0.01" class="form-control bg-transparent" name="rooms[{{ $index }}][price]" value="{{ old("rooms.$index.price", $room->price) }}" required>
+                                                            <label>Price (DT)</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 d-flex align-items-center">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-room" data-index="{{ $index }}">Remove</button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <!-- Add Room Button -->
+                                            <button type="button" class="btn btn-primary mt-2" id="addRoom">Add Room</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Formulas Section -->
+                                    <div class="col-md-12 mt-4">
+                        <h1 class="text-white mb-4">Meal plans</h1>
+                                        <div id="formulasContainer">
+                                            @foreach ($listing->formulas as $index => $formula)
+                                                <div class="row g-3 mb-3 border p-3 rounded">
+                                                    <input type="hidden" name="formulas[{{ $index }}][id]" value="{{ $formula->id }}">
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control bg-transparent" name="formulas[{{ $index }}][formula_name]" value="{{ old("formulas.$index.formula_name", $formula->formula_name) }}" required>
+                                                            <label>Formula Name</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-floating">
+                                                            <input type="number" step="0.01" class="form-control bg-transparent" name="formulas[{{ $index }}][additional_price]" value="{{ old("formulas.$index.additional_price", $formula->additional_price) }}" required>
+                                                            <label>Additional Price (DT)</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 d-flex align-items-center">
+                                                        <button type="button" class="btn btn-danger btn-sm remove-formula" data-index="{{ $index }}">Remove</button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <!-- Add Formula Button -->
+                                            <button type="button" class="btn btn-primary mt-2" id="addFormula">Add Meal Plan</button>
+                                        </div>
+                                    </div>
+
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-outline-light w-100 py-3">Update Hotel</button>
                                     </div>
@@ -177,7 +238,7 @@
                         @else
                             <p class="text-danger">Listing not found.</p>
                         @endif
-                    </div>
+                
                 </div>
             </div>
         </div>
@@ -208,7 +269,6 @@
                         <a class="btn btn-outline-light btn-social" href="" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-            
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-white mb-3">Newsletter</h4>
                     <div class="position-relative mx-auto" style="max-width: 400px;">
@@ -223,6 +283,7 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -236,5 +297,82 @@
 
     <!-- Template Javascript -->
     <script src="{{ asset('js/main.js') }}"></script>
+
+    <!-- Dynamic Room and Formula Addition -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let roomIndex = {{ $listing->rooms->count() - 1 }};
+            let formulaIndex = {{ $listing->formulas->count() - 1 }};
+
+            document.getElementById('addRoom').addEventListener('click', function() {
+                roomIndex++;
+                const roomHtml = `
+                    <div class="row g-3 mb-3 border p-3 rounded">
+                        <input type="hidden" name="rooms[${roomIndex}][id]" value="">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control bg-transparent" name="rooms[${roomIndex}][room_type]" required>
+                                <label>Room Type</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="date" class="form-control bg-transparent" name="rooms[${roomIndex}][start_date]" required>
+                                <label>Start Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="date" class="form-control bg-transparent" name="rooms[${roomIndex}][end_date]" required>
+                                <label>End Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="number" step="0.01" class="form-control bg-transparent" name="rooms[${roomIndex}][price]" required>
+                                <label>Price (DT)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-center">
+                            <button type="button" class="btn btn-danger btn-sm remove-room" data-index="${roomIndex}">Remove</button>
+                        </div>
+                    </div>`;
+                document.getElementById('roomsContainer').insertAdjacentHTML('beforeend', roomHtml);
+            });
+
+            document.getElementById('addFormula').addEventListener('click', function() {
+                formulaIndex++;
+                const formulaHtml = `
+                    <div class="row g-3 mb-3 border p-3 rounded">
+                        <input type="hidden" name="formulas[${formulaIndex}][id]" value="">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control bg-transparent" name="formulas[${formulaIndex}][formula_name]" required>
+                                <label>Formula Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input type="number" step="0.01" class="form-control bg-transparent" name="formulas[${formulaIndex}][additional_price]" required>
+                                <label>Additional Price (DT)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-center">
+                            <button type="button" class="btn btn-danger btn-sm remove-formula" data-index="${formulaIndex}">Remove</button>
+                        </div>
+                    </div>`;
+                document.getElementById('formulasContainer').insertAdjacentHTML('beforeend', formulaHtml);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-room')) {
+                    e.target.closest('.row').remove();
+                }
+                if (e.target.classList.contains('remove-formula')) {
+                    e.target.closest('.row').remove();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

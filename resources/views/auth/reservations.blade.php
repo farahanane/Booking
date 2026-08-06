@@ -232,13 +232,6 @@
     </style>
 </head>
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    <!-- Spinner End -->
 
     <!-- Navbar Start -->
     <div class="container-fluid position-relative p-0">
@@ -334,6 +327,8 @@
                                     <th>Check-out</th>
                                     <th>Travelers</th>
                                     <th>Total Price</th>
+                                    <th>Room Type</th> <!-- New column -->
+                                    <th>Meal Plan</th> <!-- New column -->
                                     @if (Auth::user()->email === 'admin@gmail.com')
                                         <th>Actions</th>
                                     @endif
@@ -341,51 +336,54 @@
                             </thead>
                             <tbody>
                                 @foreach ($reservations as $reservation)
-                                <tr>
-                                    <td>
-                                        @if ($reservation->listing)
-                                            {{ $reservation->listing->title }}
-                                        @else
-                                            <span class="text-danger">Listing Not Found</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($reservation->listing)
-                                            {{ $reservation->listing->location_city }}
-                                        @else
-                                            N/A
-                                        @endif
-                                    </td>
-                                    @if (Auth::user()->email === 'admin@gmail.com')
-                                        <td>{{ $reservation->user->name }} ({{ $reservation->user->email }})</td>
-                                    @endif
-                                    <td>{{ $reservation->start_date->format('Y-m-d') }}</td>
-                                    <td>{{ $reservation->end_date->format('Y-m-d') }}</td>
-                                    <td>{{ $reservation->number_of_travelers }} Traveler{{ $reservation->number_of_travelers > 1 ? 's' : '' }}</td>
-                                    <td>{{ number_format($reservation->total_price, 2) }} DT</td>
-                                    @if (Auth::user()->email === 'admin@gmail.com')
-                                        <td>
-                                            @if ($reservation->status === 'pending')
-                                                <div class="button-group">
-                                                    <form action="{{ route('admin.reservations.confirm', $reservation->id) }}" method="POST" style="display:inline; margin: 0;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-confirm action-btn" style="border-radius: 20px 0 0 20px; margin: 0; padding: 5px 10px; font-size: 14px; font-weight: 600; color: #fff; background-color: #28a745; border: none;">Confirm</button>
-                                                    </form>
-                                                    <form action="{{ route('admin.reservations.refuse', $reservation->id) }}" method="POST" style="display:inline; margin: 0;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-sm btn-refuse action-btn" style="border-radius: 0 20px 20px 0; margin: 0; padding: 5px 10px; font-size: 14px; font-weight: 600; color: #fff; background-color: #dc3545; border: none;">Refuse</button>
-                                                    </form>
-                                                </div>
-                                            @elseif ($reservation->status === 'confirmed')
-                                                <span class="status-text" style="font-size: 14px; font-weight: 600; color: #28a745;">Confirmed</span>
-                                            @elseif ($reservation->status === 'refused')
-                                                <span class="status-text" style="font-size: 14px; font-weight: 600; color: #dc3545;">Refused</span>
-                                            @else
-                                                <span class="status-text" style="font-size: 14px; font-weight: 600; color: #6c757d;">Unknown Status</span>
-                                            @endif
-                                        </td>
-                                    @endif
-                                </tr>
+                                <!-- Inside the <tbody> loop -->
+<tr>
+    <td>
+        @if ($reservation->listing)
+            {{ $reservation->listing->title }}
+        @else
+            <span class="text-danger">Listing Not Found</span>
+        @endif
+    </td>
+    <td>
+        @if ($reservation->listing)
+            {{ $reservation->listing->location_city }}
+        @else
+            N/A
+        @endif
+    </td>
+    @if (Auth::user()->email === 'admin@gmail.com')
+        <td>{{ $reservation->user->name }} ({{ $reservation->user->email }})</td>
+    @endif
+    <td>{{ $reservation->start_date }}</td>
+    <td>{{ $reservation->end_date }}</td>
+    <td>{{ $reservation->number_of_travelers }} Traveler{{ $reservation->number_of_travelers > 1 ? 's' : '' }}</td>
+    <td>{{ number_format($reservation->total_price, 2) }} DT</td>
+    <td>{{ $reservation->room->room_type ?? 'N/A' }}</td> <!-- Add room_type -->
+    <td>{{ $reservation->meal_plan ?? 'N/A' }}</td> <!-- Add meal_plan -->
+    @if (Auth::user()->email === 'admin@gmail.com')
+        <td>
+            @if ($reservation->status === 'pending')
+                <div class="button-group">
+                    <form action="{{ route('admin.reservations.confirm', $reservation->id) }}" method="POST" style="display:inline; margin: 0;">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-confirm action-btn" style="border-radius: 20px 0 0 20px; margin: 0; padding: 5px 10px; font-size: 14px; font-weight: 600; color: #fff; background-color: #28a745; border: none;">Confirm</button>
+                    </form>
+                    <form action="{{ route('admin.reservations.refuse', $reservation->id) }}" method="POST" style="display:inline; margin: 0;">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-refuse action-btn" style="border-radius: 0 20px 20px 0; margin: 0; padding: 5px 10px; font-size: 14px; font-weight: 600; color: #fff; background-color: #dc3545; border: none;">Refuse</button>
+                    </form>
+                </div>
+            @elseif ($reservation->status === 'confirmed')
+                <span class="status-text" style="font-size: 14px; font-weight: 600; color: #28a745;">Confirmed</span>
+            @elseif ($reservation->status === 'refused')
+                <span class="status-text" style="font-size: 14px; font-weight: 600; color: #dc3545;">Refused</span>
+            @else
+                <span class="status-text" style="font-size: 14px; font-weight: 600; color: #6c757d;">Unknown Status</span>
+            @endif
+        </td>
+    @endif
+</tr>
                             @endforeach
                             </tbody>
                         </table>
